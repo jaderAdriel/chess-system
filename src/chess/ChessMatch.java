@@ -56,11 +56,19 @@ public class ChessMatch {
         return capturedPiece;
     }
 
-    private void validateSourcePosition(Position source) {
+    public void validateSourcePosition(Position source) {
         if (!board.thereIsAPiece(source)) {
             throw new ChessException("There is no piece on source position");
         }
+        if (!board.piece(source).isThereAnyPossibleMove()) {
+            throw new ChessException("There is no possible moves for the chosen piece");
+        }
     }
+
+    public void validateSourcePosition(ChessPosition source) {
+        validateSourcePosition(source.toPosition());
+    }
+
     private void initialSetup() {
         placeNewPiece("e1", new King(board, Color.WHITE));
         placeNewPiece("a1", new Rook(board, Color.WHITE));

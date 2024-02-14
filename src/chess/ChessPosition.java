@@ -14,7 +14,7 @@ public class ChessPosition {
         this.column = column;
     }
 
-    public ChessPosition(String position) {
+    protected ChessPosition(String position) {
 
         if (position.length() != 2) {
             throw new ChessException("Error instantiating ChessPosition. Valid values are from a1 to h8.");

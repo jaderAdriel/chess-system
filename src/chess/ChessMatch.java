@@ -65,6 +65,16 @@ public class ChessMatch {
         }
     }
 
+    public void validateTargetPosition(Position source, Position target) {
+        if (!board.piece(source).possibleMove(target)) {
+            throw new ChessException("The target position isn't valid!");
+        }
+    }
+
+    public boolean[][] possibleMoves(ChessPosition source) {
+        return board.piece(source.toPosition()).possibleMoves();
+    }
+
     public void validateSourcePosition(ChessPosition source) {
         validateSourcePosition(source.toPosition());
     }

@@ -20,23 +20,26 @@ public class Program {
             try {
                 UI.printBoard(match.getPieces());
 
-                if (!errorMessage.equals("")) {
+                if (!errorMessage.isEmpty()) {
                     System.out.println("\n\n" + UI.ANSI_RED + "* " + errorMessage + " *" + UI.ANSI_RESET);
                 }
 
                 System.out.println("\nSource: ");
                 ChessPosition source = UI.readChessPosition(sc);
 
-
                 match.validateSourcePosition(source);
 
-                System.out.println("Target: ");
+                UI.printBoard(match.getPieces(), match.possibleMoves(source));
+
+                System.out.println("\nTarget: ");
                 ChessPosition target = UI.readChessPosition(sc);
 
                 ChessPiece capturedPiece = match.performChessMove(source, target);
             } catch (ChessException | InputMismatchException e) {
                 errorMessage = e.getMessage();
+                continue;
             }
+            errorMessage = "";
         }
 
     }

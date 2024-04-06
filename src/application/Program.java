@@ -18,7 +18,7 @@ public class Program {
         String errorMessage = "";
         while (true) {
             try {
-                UI.printBoard(match.getPieces());
+                UI.printMatch(match);
 
                 if (!errorMessage.isEmpty()) {
                     System.out.println("\n\n" + UI.ANSI_RED + "* " + errorMessage + " *" + UI.ANSI_RESET);

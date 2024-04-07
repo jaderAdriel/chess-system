@@ -39,6 +39,16 @@ public class Pawn extends ChessPiece {
 
         computeValidMoves(mvWhite, 1);
         computeValidMoves(mvBlack, -1);
+
+        if (getColor() == Color.WHITE && this.position.getRow() == 1) {
+            computeValidMoves(mvWhite, 2);
+        }
+
+        if (getColor() == Color.BLACK && this.position.getRow() == 6) {
+            computeValidMoves(mvWhite, -2);
+        }
+
+
         return (getColor() == Color.WHITE) ? mvWhite : mvBlack ;
     }
 }

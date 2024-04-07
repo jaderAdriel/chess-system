@@ -24,8 +24,10 @@ public class Pawn extends ChessPiece {
             mat[p.getRow()][p.getColumn()] = true;
         }
 
-        for (int i = 1; i <= 2 ; i++) {
-            p.setColumn(i);
+
+        int[] sides = {-1, 2};
+        for (int i = 0; i  < 2 ; i++) {
+            p.setColumn(p.getColumn() + sides[i]);
             if (getBoard().positionExists(p) && isThereOpponentPiece(p)) {
                 mat[p.getRow()][p.getColumn()] = true;
             }
@@ -45,7 +47,7 @@ public class Pawn extends ChessPiece {
         }
 
         if (getColor() == Color.BLACK && this.position.getRow() == 6) {
-            computeValidMoves(mvWhite, -2);
+            computeValidMoves(mvBlack, -2);
         }
 
 

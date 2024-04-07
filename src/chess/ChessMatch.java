@@ -13,6 +13,7 @@ public class ChessMatch {
     private int turn;
     private Color currentPlayer;
     private final Board board;
+    private boolean isInCheck;
     List<Piece> piecesOnTheBoard = new ArrayList<>();
     List<Piece> capturedPieces = new ArrayList<>();
 
@@ -64,9 +65,22 @@ public class ChessMatch {
         this.currentPlayer = (currentPlayer == Color.WHITE) ? Color.BLACK : Color.WHITE;
     }
 
+    private void undoMove(Position source, Position target, Piece capturedPiece) {
+        Piece p = board.removePiece(target);
+        board.placePiece(p, source);
+
+        if (capturedPiece != null) {
+            board.placePiece(capturedPiece, target);
+            capturedPieces.remove(capturedPiece);
+            piecesOnTheBoard.add(capturedPiece);
+        }
+
+    }
+
     private Piece makeMove(Position source, Position target) {
         Piece p = board.removePiece(source);
         Piece capturedPiece;
+
 
         try {
             capturedPiece = board.removePiece(target);
@@ -82,6 +96,64 @@ public class ChessMatch {
         return capturedPiece;
     }
 
+    private ChessPiece findKing(Color color) {
+        for (Piece piece : piecesOnTheBoard) {
+            if ( ((ChessPiece)piece).getColor() == color &&  piece instanceof King ) {
+                return (ChessPiece)piece;
+            }
+        }
+        throw new IllegalStateException("There is no " + color + " king on the board");
+    }
+
+    private boolean testCheck(Color color) {
+        Position kingPosition = findKing(color).getChessPosition().toPosition();
+        List<Piece> opponentPieces = piecesOnTheBoard.stream().filter(x -> ((ChessPiece)x).getColor() != color).toList();
+
+        for (Piece piece : opponentPieces) {
+            boolean[][] opponentPossibleMoves = piece.possibleMoves();
+
+            if ( opponentPossibleMoves[kingPosition.getRow()][kingPosition.getColumn()] ) {
+                return true;
+            }
+
+        }
+        return false;
+    }
+
+    private boolean[][] movesWithoutPuttingOwnKingInCheck(ChessPiece piece) {
+
+        boolean[][] newValidPossibleMoves = piece.possibleMoves();
+
+        Position originPosition = piece.getChessPosition().toPosition();
+
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 8; j++) {
+                if (newValidPossibleMoves[i][j]) {
+
+                    Position targetPosition = new Position(i , j);
+                    Piece capturedPiece = makeMove(originPosition, targetPosition );
+                    boolean getInCheck = testCheck(piece.getColor());
+
+                    undoMove(originPosition, targetPosition, capturedPiece);
+
+                    newValidPossibleMoves[i][j] = !getInCheck;
+                }
+            }
+        }
+
+        return newValidPossibleMoves;
+    }
+
+    private boolean isThereAnyPossibleMove(ChessPiece piece){
+        boolean[][] possibleMoves = movesWithoutPuttingOwnKingInCheck(piece);
+        for (int i = 0; i < possibleMoves.length; i++) {
+            for (int j = 0; j < possibleMoves.length; j++) {
+                if (possibleMoves[i][j]) return true;
+            }
+        }
+        return false;
+    }
+
     public void validateSourcePosition(Position source) {
         if (!board.thereIsAPiece(source)) {
             throw new ChessException("There is no piece on source position");
@@ -89,7 +161,7 @@ public class ChessMatch {
         if (currentPlayer != ((ChessPiece)board.piece(source)).getColor()) {
             throw new ChessException("The chosen piece is not yours");
         }
-        if (!board.piece(source).isThereAnyPossibleMove()) {
+        if (!isThereAnyPossibleMove((ChessPiece)board.piece(source))) {
             throw new ChessException("There is no possible moves for the chosen piece");
         }
     }
@@ -101,7 +173,7 @@ public class ChessMatch {
     }
 
     public boolean[][] possibleMoves(ChessPosition source) {
-        return board.piece(source.toPosition()).possibleMoves();
+        return movesWithoutPuttingOwnKingInCheck((ChessPiece) board.piece(source.toPosition()));
     }
 
     public void validateSourcePosition(ChessPosition source) {

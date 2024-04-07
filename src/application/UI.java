@@ -5,52 +5,35 @@ import chess.ChessPiece;
 import chess.ChessPosition;
 import chess.Color;
 
+import java.util.Arrays;
 import java.util.InputMismatchException;
+import java.util.List;
 import java.util.Scanner;
+import java.util.stream.Collectors;
 
 public class UI {
     public static final String ANSI_RESET = "\u001B[0m";
     public static final String ANSI_RED = "\u001B[31m";
-    public static final String ANSI_WHITE = "\u001B[37m";
-    public static final String ANSI_BLACK = "\u001B[30m";
-    public static final String ANSI_BLUE = "\u001B[34m";
-    public static final String GREEN_BG = "\u001B[42m";
-    public static final String WHITE_BG = "\u001B[47m";
 
 
     // Bold High Intensity
-    public static final String BLACK_BOLD_BRIGHT = "\033[1;90m"; // BLACK
-    public static final String RED_BOLD_BRIGHT = "\033[1;91m";   // RED
-    public static final String GREEN_BOLD_BRIGHT = "\033[1;92m"; // GREEN
-    public static final String YELLOW_BOLD_BRIGHT = "\033[1;93m";// YELLOW
-    public static final String BLUE_BOLD_BRIGHT = "\033[1;94m";  // BLUE
-    public static final String PURPLE_BOLD_BRIGHT = "\033[1;95m";// PURPLE
+    public static final String WHITE_BOLD_BRIGHT = "\033[1;97m";
 
     public static final String RED_UNDERLINED = "\033[4;31m";    // RED
 
-    // High Intensity backgrounds
-    public static final String BLACK_BACKGROUND_BRIGHT = "\033[0;100m";// BLACK
-    public static final String RED_BACKGROUND_BRIGHT = "\033[0;101m";// RED
-    public static final String GREEN_BACKGROUND_BRIGHT = "\033[0;102m";// GREEN
     public static final String YELLOW_BACKGROUND_BRIGHT = "\033[0;103m";// YELLOW
-    public static final String BLUE_BACKGROUND_BRIGHT = "\033[0;104m";// BLUE
-    public static final String PURPLE_BACKGROUND_BRIGHT = "\033[0;105m"; // PURPLE
-    public static final String CYAN_BACKGROUND_BRIGHT = "\033[0;106m";  // CYAN
-    public static final String WHITE_BACKGROUND_BRIGHT = "\033[0;107m";   // WHITE
-    public static final String PURPLE_BOLD = "\033[1;35m"; // PURPLE
     public static final String BLACK_BOLD = "\033[1;30m";  // BLACK
     public static final String RED_BOLD = "\033[1;31m";    // RED
-    public static final String GREEN_BACKGROUND = "\033[42m";  // GREEN
 
-
+    public static final String GRAY_BACKGROUND_BRIGHT = "\033[0;47m"; // Background cinza claro
+    public static final String GRAY_BACKGROUND_NORMAL = "\033[0;100m"; // Background cinza escuro
 
     public static final String BLACK_PIECES_COLOR = BLACK_BOLD;
-    public static final String WHITE_PIECES_COLOR = PURPLE_BOLD;
+    public static final String WHITE_PIECES_COLOR = WHITE_BOLD_BRIGHT;
     public static final String POSSIBLE_MOVE_COLOR = RED_BOLD;
-    public static final String WHITE_PLACE_BG = CYAN_BACKGROUND_BRIGHT;
-    public static final String BLACK_PLACE_BG = GREEN_BACKGROUND;
+    public static final String WHITE_PLACE_BG = GRAY_BACKGROUND_BRIGHT;
+    public static final String BLACK_PLACE_BG = GRAY_BACKGROUND_NORMAL;
     public static final String YELLOW_BOLD = "\033[1;33m"; // YELLOW
-    public static final String YELLOW_BACKGROUND = "\033[43m"; // YELLOW
 
     public static void clearScreen() {
         System.out.print("\033[H\033[2J");
@@ -68,9 +51,10 @@ public class UI {
         }
     }
 
-    public static void printMatch(ChessMatch chessMatch) {
+    public static void printMatch(ChessMatch chessMatch, List<ChessPiece> captured) {
         printBoard(chessMatch.getPieces());
         System.out.println("\nTurn: " + chessMatch.getTurn());
+        printCapturedPieces(captured);
         System.out.println("Waiting player: " + chessMatch.getCurrentPlayer());
     }
 
@@ -135,5 +119,13 @@ public class UI {
         fontColor = isPossibleMove ? RED_UNDERLINED : fontColor;
 
         System.out.print(ANSI_RESET + background  + " " + fontColor + piece + ANSI_RESET + background + " ");
+    }
+
+    private static void printCapturedPieces(List<ChessPiece> capturedPieces) {
+        List<ChessPiece> white = capturedPieces.stream().filter(x -> x.getColor() == Color.WHITE).toList();
+        List<ChessPiece> black = capturedPieces.stream().filter(x -> x.getColor() == Color.BLACK).toList();
+        System.out.println("Captured pieces: ");
+        System.out.println("    White: " + WHITE_BOLD_BRIGHT + Arrays.toString(white.toArray()) + ANSI_RESET);
+        System.out.println("    Black: " + YELLOW_BOLD + Arrays.toString(black.toArray()) + ANSI_RESET);
     }
 }

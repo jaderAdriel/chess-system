@@ -57,7 +57,14 @@ public class ChessMatch {
         validateTargetPosition(source, target);
         Piece capturedPiece = makeMove(source, target);
         nextTurn();
+
+        isInCheck = testCheck(Color.WHITE) || testCheck(Color.BLACK);
+
         return (ChessPiece) capturedPiece;
+    }
+
+    public boolean isInCheck() {
+        return isInCheck;
     }
 
     private void nextTurn() {

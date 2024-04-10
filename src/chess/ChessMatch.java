@@ -127,7 +127,7 @@ public class ChessMatch {
         return false;
     }
 
-    private boolean[][] movesWithoutPuttingOwnKingInCheck(ChessPiece piece) {
+    private boolean[][] getValidMovesWithoutPuttingOwnKingInCheck(ChessPiece piece) {
 
         boolean[][] newValidPossibleMoves = piece.possibleMoves();
 
@@ -151,8 +151,8 @@ public class ChessMatch {
         return newValidPossibleMoves;
     }
 
-    private boolean isThereAnyPossibleMove(ChessPiece piece){
-        boolean[][] possibleMoves = movesWithoutPuttingOwnKingInCheck(piece);
+    private boolean hasAnyPossibleMove(ChessPiece piece){
+        boolean[][] possibleMoves = getValidMovesWithoutPuttingOwnKingInCheck(piece);
         for (int i = 0; i < possibleMoves.length; i++) {
             for (int j = 0; j < possibleMoves.length; j++) {
                 if (possibleMoves[i][j]) return true;
@@ -165,6 +165,10 @@ public class ChessMatch {
         if (!possibleMoves(ChessPosition.fromPosition(source))[target.getRow()][target.getColumn()]) {
             throw new ChessException("The target position isn't valid!");
         }
+    }
+
+    public boolean[][] possibleMoves(ChessPosition source) {
+        return getValidMovesWithoutPuttingOwnKingInCheck((ChessPiece) board.piece(source.toPosition()));
     }
 
     public void validateSourcePosition(Position source) {

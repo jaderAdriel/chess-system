@@ -29,7 +29,7 @@ public class UI {
     public static final String GRAY_BACKGROUND_NORMAL = "\033[0;100m"; // Background cinza escuro
 
     public static final String BLACK_PIECES_COLOR = BLACK_BOLD;
-    public static final String WHITE_PIECES_COLOR = WHITE_BOLD_BRIGHT;
+    public static final String WHITE_PIECES_COLOR = "\033[1;33m";
     public static final String POSSIBLE_MOVE_COLOR = RED_BOLD;
     public static final String WHITE_PLACE_BG = GRAY_BACKGROUND_BRIGHT;
     public static final String BLACK_PLACE_BG = GRAY_BACKGROUND_NORMAL;
@@ -53,9 +53,9 @@ public class UI {
 
     public static void printMatch(ChessMatch chessMatch, List<ChessPiece> captured) {
         printBoard(chessMatch.getPieces());
-        if (chessMatch.isInCheck()) System.out.println("\nCheck!!");
         System.out.println("\nTurn: " + chessMatch.getTurn());
         printCapturedPieces(captured);
+        if (chessMatch.isInCheck()) System.out.println("\nCheck!!");
         System.out.println("Waiting player: " + chessMatch.getCurrentPlayer());
     }
 
@@ -128,5 +128,10 @@ public class UI {
         System.out.println("Captured pieces: ");
         System.out.println("    White: " + WHITE_BOLD_BRIGHT + Arrays.toString(white.toArray()) + ANSI_RESET);
         System.out.println("    Black: " + YELLOW_BOLD + Arrays.toString(black.toArray()) + ANSI_RESET);
+    }
+
+    public static void printEndMessage(ChessPiece[][] pieces, Color winner) {
+        printBoard(pieces);
+        System.out.println("\nCheck mate!! \n" + winner + " pieces are the winner!!");
     }
 }

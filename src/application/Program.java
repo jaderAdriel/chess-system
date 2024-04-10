@@ -20,7 +20,7 @@ public class Program {
         List<ChessPiece> captured = new ArrayList<>();
 
         String errorMessage = "";
-        while (true) {
+        while ( match.isCheckMated() == false) {
             try {
                 UI.printMatch(match, captured);
 
@@ -48,6 +48,6 @@ public class Program {
             }
             errorMessage = "";
         }
-
+        UI.printEndMessage(match.getPieces(), match.getWinner());
     }
 }

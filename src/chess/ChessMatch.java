@@ -178,7 +178,7 @@ public class ChessMatch {
         if (currentPlayer != ((ChessPiece)board.piece(source)).getColor()) {
             throw new ChessException("The chosen piece is not yours");
         }
-        if (!isThereAnyPossibleMove((ChessPiece)board.piece(source))) {
+        if (!hasAnyPossibleMove((ChessPiece)board.piece(source))) {
             throw new ChessException("There is no possible moves for the chosen piece");
         }
     }

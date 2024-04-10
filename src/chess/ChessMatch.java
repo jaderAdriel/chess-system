@@ -161,6 +161,12 @@ public class ChessMatch {
         return false;
     }
 
+    public void validateTargetPosition(Position source, Position target) {
+        if (!possibleMoves(ChessPosition.fromPosition(source))[target.getRow()][target.getColumn()]) {
+            throw new ChessException("The target position isn't valid!");
+        }
+    }
+
     public void validateSourcePosition(Position source) {
         if (!board.thereIsAPiece(source)) {
             throw new ChessException("There is no piece on source position");

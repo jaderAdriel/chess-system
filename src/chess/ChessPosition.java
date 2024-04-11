@@ -37,4 +37,12 @@ public class ChessPosition {
         int i = position.getColumn() + 97;
         return new ChessPosition(position.getRow() + 1, (char) i);
     }
+
+    public int getRow() {
+        return row;
+    }
+
+    public char getColumn() {
+        return column;
+    }
 }

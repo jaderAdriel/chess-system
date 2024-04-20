@@ -20,7 +20,7 @@ public class Program {
         List<ChessPiece> captured = new ArrayList<>();
 
         String errorMessage = "";
-        while ( match.isCheckMated() == false) {
+        while (!match.isCheckMated()) {
             try {
                 UI.printMatch(match, captured);
 

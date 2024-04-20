@@ -2,12 +2,15 @@ package chess.pieces;
 
 import boardgame.Board;
 import boardgame.Position;
+import chess.ChessMatch;
 import chess.ChessPiece;
 import chess.Color;
 
 public class Pawn extends ChessPiece {
-    public Pawn(Board board, Color color) {
+    ChessMatch match;
+    public Pawn(Board board, Color color, ChessMatch match) {
         super(board, color);
+        this.match = match;
     }
 
     @Override
@@ -28,8 +31,20 @@ public class Pawn extends ChessPiece {
         int[] sides = {-1, 2};
         for (int i = 0; i  < 2 ; i++) {
             p.setColumn(p.getColumn() + sides[i]);
+            if ( Math.abs(p.getRow() - this.getChessPosition().toPosition().getRow()) == 2 ) continue;
             if (getBoard().positionExists(p) && isThereOpponentPiece(p)) {
                 mat[p.getRow()][p.getColumn()] = true;
+            }
+        }
+
+        if (match.getEnPassantVulnerable() == null ) return;
+        ChessPiece enPassantVulnerable = match.getEnPassantVulnerable();
+
+        if ( this.getChessPosition().getRow() == enPassantVulnerable.getChessPosition().getRow() ) {
+
+            Position side = enPassantVulnerable.getChessPosition().toPosition();
+            if (Math.abs(side.getColumn() - this.getChessPosition().toPosition().getColumn()) == 1 ) {
+                mat[side.getRow() + rowIncrement][side.getColumn()] = true;
             }
         }
     }

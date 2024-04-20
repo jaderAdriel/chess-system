@@ -29,7 +29,7 @@ public class ChessPosition {
         this.column = column;
     }
 
-    protected Position toPosition() {
+    public Position toPosition() {
         return new Position(row - 1, (int) column - 97);
     }
 

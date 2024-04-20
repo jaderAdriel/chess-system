@@ -1,6 +1,5 @@
 package chess;
 
-import application.UI;
 import boardgame.Board;
 import boardgame.Piece;
 import boardgame.Position;
@@ -17,6 +16,7 @@ public class ChessMatch {
     private boolean isCheckMated = false;
     private Color winner = null;
     private ChessPiece enPassantVulnerable;
+    private ChessPiece promoted;
     List<Piece> piecesOnTheBoard = new ArrayList<>();
     List<Piece> capturedPieces = new ArrayList<>();
 
@@ -66,6 +66,10 @@ public class ChessMatch {
         return winner;
     }
 
+    public ChessPiece getPromoted() {
+        return promoted;
+    }
+
     private void placeNewPiece(String pos, ChessPiece piece) {
         board.placePiece(piece,  new ChessPosition(pos).toPosition());
         piecesOnTheBoard.add(piece);
@@ -89,6 +93,9 @@ public class ChessMatch {
             testCheckMated(opponent);
         };
 
+        if (isPromotionMove(source, target)) {
+            this.promoted = (ChessPiece) board.piece(target);
+        }
 
         if (!isCheckMated) nextTurn();
 
@@ -98,6 +105,35 @@ public class ChessMatch {
         }
 
         return (ChessPiece) capturedPiece;
+    }
+
+    private ChessPiece getPieceFromProvidePieceType(String pieceType) {
+
+        if (!pieceType.equals("B") && !pieceType.equals("H") && !pieceType.equals("R") && !pieceType.equals("Q")) {
+            throw new IllegalStateException("Invalid type for promotion");
+        }
+
+        if (pieceType.equals("B")) return new Bishop(this.board, promoted.getColor());
+        if (pieceType.equals("H")) return new Knight(this.board, promoted.getColor());
+        if (pieceType.equals("R")) return new Rook(this.board, promoted.getColor());
+
+        return new Queen(this.board, promoted.getColor());
+    }
+
+    public void promote(String pieceType) {
+
+        if (promoted == null) {
+            throw new IllegalStateException("There is no piece to be promoted");
+        }
+
+        ChessPiece newPiece = getPieceFromProvidePieceType(pieceType);
+        Position target = promoted.getChessPosition().toPosition();
+        board.removePiece(target);
+        piecesOnTheBoard.remove(promoted);
+
+        board.placePiece(newPiece, target);
+        piecesOnTheBoard.add(newPiece);
+        promoted = null;
     }
 
     private void nextTurn() {
@@ -119,6 +155,7 @@ public class ChessMatch {
         }
 
         if (moveType == MoveType.REGULAR) undoRegularMove(source, target, capturedPiece);
+        if (moveType == MoveType.PROMOTION) undoRegularMove(source, target, capturedPiece);
 
     }
 
@@ -126,7 +163,6 @@ public class ChessMatch {
         ChessPiece p = (ChessPiece) board.removePiece(target);
         p.decreaseMove();
         board.placePiece(p, source);
-
 
         if (capturedPiece != null) {
             board.placePiece(capturedPiece, target);
@@ -145,7 +181,7 @@ public class ChessMatch {
 
         if (moveType == MoveType.EN_PASSANT) return enPassant(source, target);
 
-        if (moveType == MoveType.REGULAR) return makeRegularMove(source, target);
+        if (moveType == MoveType.REGULAR || moveType == MoveType.PROMOTION ) return makeRegularMove(source, target);
 
         return null;
     }
@@ -159,10 +195,9 @@ public class ChessMatch {
         if (isEnPassantMove(source, target)) {
             return MoveType.EN_PASSANT;
         }
-//
-//        if (isPromotionMove(source, target)) {
-//            return MoveType.PROMOTION;
-//        }
+        if (isPromotionMove(source, target)) {
+            return MoveType.PROMOTION;
+        }
 
         return MoveType.REGULAR;
     }
@@ -183,8 +218,6 @@ public class ChessMatch {
         ChessPiece piece = (ChessPiece) board.piece(source);
 
         if (!(piece instanceof Pawn)) return false;
-
-        int direction = piece.getColor() == Color.WHITE ? 1 : -1;
 
         if ( !(Math.abs(source.getColumn() - target.getColumn()) == 1) || board.thereIsAPiece(target)) return false;
         System.out.println("oii");
@@ -223,8 +256,17 @@ public class ChessMatch {
         this.enPassantVulnerable = (ChessPiece) capturedPiece;
         return null;
     }
-//    private boolean isPromotionMove(Position source, Position target) {
-//    }
+
+    private boolean isPromotionMove(Position source, Position target) {
+
+        ChessPiece piece = (ChessPiece) board.piece(target);
+
+        if (!(piece instanceof Pawn)) return false;
+
+        int promotionRow = piece.getColor() == Color.WHITE ? 7 : 0;
+
+        return target.getRow() == promotionRow;
+    }
 
     private Piece makeRegularMove(Position source, Position target) {
         ChessPiece piece = (ChessPiece) board.removePiece(source);

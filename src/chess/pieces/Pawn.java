@@ -40,6 +40,8 @@ public class Pawn extends ChessPiece {
         if (match.getEnPassantVulnerable() == null ) return;
         ChessPiece enPassantVulnerable = match.getEnPassantVulnerable();
 
+        if (this.getColor() == enPassantVulnerable.getColor()) return;
+
         if ( this.getChessPosition().getRow() == enPassantVulnerable.getChessPosition().getRow() ) {
 
             Position side = enPassantVulnerable.getChessPosition().toPosition();

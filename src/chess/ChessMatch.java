@@ -98,7 +98,7 @@ public class ChessMatch {
         }
 
         if (!isCheckMated) nextTurn();
-
+        
         this.enPassantVulnerable = null;
         if (movedPiece instanceof  Pawn && (target.getRow() == source.getRow() + 2 || target.getRow() == source.getRow() - 2)) {
             this.enPassantVulnerable = movedPiece;
@@ -276,6 +276,7 @@ public class ChessMatch {
         if (board.thereIsAPiece(target)) {
             capturedPiece = board.removePiece(target);
             piecesOnTheBoard.remove(capturedPiece);
+            this.enPassantVulnerable = null;
             capturedPieces.add(capturedPiece);
         }
 

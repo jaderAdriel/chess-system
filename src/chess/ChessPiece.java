@@ -8,6 +8,7 @@ import chess.ChessPosition;
 public abstract class ChessPiece extends Piece {
     private Color color;
     private int moveCount = 0;
+
     public ChessPiece(Board board, Color color) {
         super(board);
         this.color = color;
@@ -17,12 +18,15 @@ public abstract class ChessPiece extends Piece {
         ChessPiece p = (ChessPiece) getBoard().piece(position);
         return p != null && p.getColor() != color;
     }
+
+    public abstract String getType();
+
     public Color getColor() {
         return color;
     }
 
     public ChessPosition getChessPosition() {
-        return ChessPosition.fromPosition(position);
+        return ChessPosition.fromPosition(this.position);
     }
 
     public int getMoveCount() {

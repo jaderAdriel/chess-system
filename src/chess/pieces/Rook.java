@@ -15,6 +15,11 @@ public class Rook extends ChessPiece {
         return "R";
     }
 
+    @Override
+    public String getType() {
+        return "Rook";
+    }
+
     private void computeValidMoves(boolean[][] mat, int rowIncrement, int columnIncrement) {
         Position p = new Position(position.getRow(), position.getColumn());
 
@@ -29,6 +34,7 @@ public class Rook extends ChessPiece {
             mat[p.getRow()][p.getColumn()] = true;
         }
     }
+
     @Override
     public boolean[][] possibleMoves() {
         boolean[][] mat = new boolean[getBoard().getRows()][getBoard().getColumns()];

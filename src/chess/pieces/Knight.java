@@ -15,6 +15,10 @@ public class Knight extends ChessPiece {
         return "H";
     }
 
+    @Override
+    public String getType() {
+        return "Knight";
+    }
     private void computeValidMoves(boolean[][] mat, int rowIncrement, int columnIncrement) {
         Position p = new Position(position.getRow(), position.getColumn());
 
@@ -28,6 +32,7 @@ public class Knight extends ChessPiece {
             mat[p.getRow()][p.getColumn()] = true;
         }
     }
+
     @Override
     public boolean[][] possibleMoves() {
         boolean[][] mat = new boolean[getBoard().getRows()][getBoard().getColumns()];

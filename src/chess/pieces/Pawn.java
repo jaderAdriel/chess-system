@@ -18,6 +18,11 @@ public class Pawn extends ChessPiece {
         return "P";
     }
 
+    @Override
+    public String getType() {
+        return "Pawn";
+    }
+
     private void computeValidMoves(boolean[][] mat, int rowIncrement) {
         Position p = new Position(position.getRow(), position.getColumn());
 
@@ -37,7 +42,7 @@ public class Pawn extends ChessPiece {
             }
         }
 
-        if (match.getEnPassantVulnerable() == null ) return;
+        if (match.getEnPassantVulnerable() == null) return;
         ChessPiece enPassantVulnerable = match.getEnPassantVulnerable();
 
         if (this.getColor() == enPassantVulnerable.getColor()) return;
